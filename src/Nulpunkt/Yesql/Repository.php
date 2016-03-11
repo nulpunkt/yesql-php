@@ -29,22 +29,35 @@ class Repository
         $this->statements = [];
 
         $currentMethod = null;
+        $collectedSql = "";
         foreach (file($this->sqlFile) as $line) {
-            $line = trim($line);
             if (strpos($line, '--') === 0) {
+                $this->saveStatement($currentMethod, $collectedSql);
                 preg_match("/\bname:\s*([a-zA-Z_0-9]+)/", $line, $m);
                 $currentMethod = $m[1];
-            } elseif ($currentMethod && stripos($line, 'select') === 0) {
-                $this->statements[$currentMethod] = new Statement\Select($line);
-                $currentMethod = null;
-            } elseif ($currentMethod && stripos($line, 'insert') === 0) {
-                $this->statements[$currentMethod] = new Statement\Insert($line);
-                $currentMethod = null;
-            } elseif ($currentMethod && stripos($line, 'update') === 0) {
-                $this->statements[$currentMethod] = new Statement\Update($line);
-                $currentMethod = null;
+                $collectedSql = "";
+            } else {
+                $collectedSql .= $line;
             }
         }
+        $this->saveStatement($currentMethod, $collectedSql);
+    }
 
+    private function saveStatement($currentMethod, $collectedSql)
+    {
+        if (!$currentMethod) {
+            return;
+        }
+
+        if (stripos($collectedSql, 'select') === 0) {
+            $this->statements[$currentMethod] = new Statement\Select($collectedSql);
+            $currentMethod = null;
+        } elseif (stripos($collectedSql, 'insert') === 0) {
+            $this->statements[$currentMethod] = new Statement\Insert($collectedSql);
+            $currentMethod = null;
+        } else {
+            $this->statements[$currentMethod] = new Statement\Update($collectedSql);
+            $currentMethod = null;
+        }
     }
 }

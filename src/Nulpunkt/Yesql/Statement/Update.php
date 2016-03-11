@@ -14,7 +14,12 @@ class Update
     public function execute($db, $args)
     {
         $stmt = $db->prepare($this->sql);
-        $stmt->execute($args[0]);
+        if (isset($args[0])) {
+            $stmt->execute($args[0]);
+        } else {
+            $stmt->execute();
+        }
+
         return $stmt->rowCount();
     }
 }
