@@ -17,7 +17,11 @@ class Repository
     public function __call($name, $args)
     {
         $this->load();
-        return $this->statements[$name]->execute($this->db, $args);
+        if (isset($this->statements[$name])) {
+            return $this->statements[$name]->execute($this->db, $args);
+        } else {
+            throw new Exception\MethodMissing($name);
+        }
     }
 
     private function load()
@@ -55,9 +59,11 @@ class Repository
         } elseif (stripos($collectedSql, 'insert') === 0) {
             $this->statements[$currentMethod] = new Statement\Insert($collectedSql);
             $currentMethod = null;
-        } else {
+        } elseif (stripos($collectedSql, 'update') === 0) {
             $this->statements[$currentMethod] = new Statement\Update($collectedSql);
             $currentMethod = null;
+        } else {
+            throw new Exception\UnknownStatement($collectedSql);
         }
     }
 }

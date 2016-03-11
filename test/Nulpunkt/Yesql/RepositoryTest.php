@@ -42,19 +42,30 @@ class RepositoryTest extends \TestHelper\TestCase
         $this->assertDataSetsEqual($expectedData, $dataSet);
     }
 
+    /**
+     * @expectedException Nulpunkt\Yesql\Exception\MethodMissing
+     */
+    public function testWeComplainAboutUndefinedMethods()
+    {
+        $this->repo->derp();
+    }
+
+    /**
+     * @expectedException Nulpunkt\Yesql\Exception\UnknownStatement
+     */
+    public function testWeComplainAboutSqlWeDontKnowWhatToDoAbout()
+    {
+        $r = new Repository($this->getDatabase(), __DIR__ . "/unknown.sql");
+        $r->describeSomething();
+    }
+
     public function setup()
     {
-        $this->repo = new Repository(
-            $this->getDatabase(),
-            __DIR__ . "/test.sql"
-        );
+        $this->repo = new Repository($this->getDatabase(), __DIR__ . "/test.sql");
     }
 
     protected function getDataSet()
     {
-        return $this->createArrayDataSet(
-            [
-            ]
-        );
+        return $this->createArrayDataSet([]);
     }
 }
