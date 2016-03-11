@@ -40,6 +40,9 @@ class Repository
             } elseif ($currentMethod && stripos($line, 'insert') === 0) {
                 $this->statements[$currentMethod] = new Statement\Insert($line);
                 $currentMethod = null;
+            } elseif ($currentMethod && stripos($line, 'update') === 0) {
+                $this->statements[$currentMethod] = new Statement\Update($line);
+                $currentMethod = null;
             }
         }
 

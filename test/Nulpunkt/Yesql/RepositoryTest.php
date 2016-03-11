@@ -25,6 +25,23 @@ class RepositoryTest extends \TestHelper\TestCase
         $this->assertDataSetsEqual($expectedData, $dataSet);
     }
 
+    public function testWeCanUpdate()
+    {
+        $rowsAffected = $this->repo->updateRow(['something' => 'other thing updated', 'id' => 2]);
+
+        $this->assertSame(1, $rowsAffected);
+
+        $dataSet = $this->createQueryDataset(
+            ['t' => "SELECT * FROM test_table where id = 2"]
+        );
+
+        $expectedData = $this->createArrayDataSet(
+            ['t' => [['id' => 2, 'something' => 'other thing updated']]]
+        );
+
+        $this->assertDataSetsEqual($expectedData, $dataSet);
+    }
+
     public function setup()
     {
         $this->repo = new Repository(
