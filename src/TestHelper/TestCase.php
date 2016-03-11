@@ -13,7 +13,9 @@ abstract class TestCase extends \PHPUnit_Extensions_Database_TestCase
         );
 
         $this->db = new \PDO(\MYSQL_SERVER_DSN, \DB_USER, \DB_PASS, $options);
-
+        $fixture = file_get_contents(__DIR__.'/mysql-fixture.sql');
+        $stmt = $this->db->prepare($fixture);
+        $stmt->execute();
     }
 
     public function getDatabase()
