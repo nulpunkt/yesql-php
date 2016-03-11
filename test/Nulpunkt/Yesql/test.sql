@@ -10,3 +10,6 @@ insert into test_table (something) values (:something)
 -- name: updateRow
 update test_table set something = :something
 where id = :id
+
+-- name: deleteById
+DELETE FROM test_table WHERE id = :id;

@@ -42,6 +42,21 @@ class RepositoryTest extends \TestHelper\TestCase
         $this->assertDataSetsEqual($expectedData, $dataSet);
     }
 
+    public function testWeCanDelete()
+    {
+        $this->repo->deleteById(['id' => 1]);
+
+        $dataSet = $this->createQueryDataset(
+            ['t' => 'SELECT * FROM test_table WHERE id = 1']
+        );
+
+        $this->assertSame(
+            0,
+            $dataSet->getTable('t')->getRowCount(),
+            'The row should be gone from the database'
+        );
+    }
+
     /**
      * @expectedException Nulpunkt\Yesql\Exception\MethodMissing
      */

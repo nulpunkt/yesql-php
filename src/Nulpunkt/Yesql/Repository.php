@@ -59,7 +59,7 @@ class Repository
         } elseif (stripos($collectedSql, 'insert') === 0) {
             $this->statements[$currentMethod] = new Statement\Insert($collectedSql);
             $currentMethod = null;
-        } elseif (stripos($collectedSql, 'update') === 0) {
+        } elseif (stripos($collectedSql, 'update') === 0 || stripos($collectedSql, 'delete') === 0) {
             $this->statements[$currentMethod] = new Statement\Update($collectedSql);
             $currentMethod = null;
         } else {
