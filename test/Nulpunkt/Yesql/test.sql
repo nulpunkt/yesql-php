@@ -1,4 +1,4 @@
--- name: getById
+-- name: getById oneOrMany: one
 select * from test_table where id = :id
 
 -- name: getAllIds

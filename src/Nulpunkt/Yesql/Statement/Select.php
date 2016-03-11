@@ -5,10 +5,12 @@ namespace Nulpunkt\Yesql\Statement;
 class Select
 {
     private $sql;
+    private $oneOrMany;
 
-    public function __construct($sql)
+    public function __construct($sql, $oneOrMany)
     {
         $this->sql = $sql;
+        $this->oneOrMany = $oneOrMany;
     }
 
     public function execute($db, $args)
@@ -19,6 +21,10 @@ class Select
         } else {
             $stmt->execute();
         }
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        if ($this->oneOrMany == 'one') {
+            return $stmt->fetch(\PDO::FETCH_ASSOC);
+        } else {
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        }
     }
 }

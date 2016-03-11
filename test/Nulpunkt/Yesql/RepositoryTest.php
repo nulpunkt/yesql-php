@@ -4,9 +4,13 @@ namespace Nulpunkt\Yesql;
 
 class RepositoryTest extends \TestHelper\TestCase
 {
-    public function testWeCanSelect()
+    public function testWeCanGetOneRow()
     {
-        $this->assertEquals([['id' => 1, 'something' => 'a thing']], $this->repo->getById(['id' => 1]));
+        $this->assertEquals(['id' => 1, 'something' => 'a thing'], $this->repo->getById(['id' => 1]));
+    }
+
+    public function testWeCanGetManyRows()
+    {
         $this->assertEquals([['id' => 1], ['id' => 2]], $this->repo->getAllIds());
     }
 
@@ -55,6 +59,11 @@ class RepositoryTest extends \TestHelper\TestCase
             $dataSet->getTable('t')->getRowCount(),
             'The row should be gone from the database'
         );
+    }
+
+    public function testLol()
+    {
+        $this->assertTrue(true);
     }
 
     /**

@@ -33,28 +33,41 @@ class Repository
         $this->statements = [];
 
         $currentMethod = null;
+        $oneOrMany = null;
         $collectedSql = "";
         foreach (file($this->sqlFile) as $line) {
             if (strpos($line, '--') === 0) {
-                $this->saveStatement($currentMethod, $collectedSql);
-                preg_match("/\bname:\s*([a-zA-Z_0-9]+)/", $line, $m);
-                $currentMethod = $m[1];
+                $this->saveStatement($currentMethod, $collectedSql, $oneOrMany);
+                $currentMethod = $this->getMethodName($line);
+                $oneOrMany = $this->getOneOrMany($line);
                 $collectedSql = "";
             } else {
                 $collectedSql .= $line;
             }
         }
-        $this->saveStatement($currentMethod, $collectedSql);
+        $this->saveStatement($currentMethod, $collectedSql, $oneOrMany);
     }
 
-    private function saveStatement($currentMethod, $collectedSql)
+    private function getMethodName($line)
+    {
+        preg_match("/\bname:\s*([a-zA-Z_0-9]+)/", $line, $m);
+        return $m[1];
+    }
+
+    private function getOneOrMany($line)
+    {
+        preg_match("/\boneOrMany:\s*(one|many)/", $line, $m);
+        return isset($m[1]) ? $m[1] : "many";
+    }
+
+    private function saveStatement($currentMethod, $collectedSql, $oneOrMany)
     {
         if (!$currentMethod) {
             return;
         }
 
         if (stripos($collectedSql, 'select') === 0) {
-            $this->statements[$currentMethod] = new Statement\Select($collectedSql);
+            $this->statements[$currentMethod] = new Statement\Select($collectedSql, $oneOrMany);
             $currentMethod = null;
         } elseif (stripos($collectedSql, 'insert') === 0) {
             $this->statements[$currentMethod] = new Statement\Insert($collectedSql);
