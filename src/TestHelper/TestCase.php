@@ -18,6 +18,15 @@ abstract class TestCase extends \PHPUnit_Extensions_Database_TestCase
         $stmt->execute();
     }
 
+    public function createQueryDataset($tables)
+    {
+        $ds = new \PHPUnit_Extensions_Database_DataSet_QueryDataSet($this->getConnection());
+        foreach ($tables as $table => $query) {
+            $ds->addTable($table, $query);
+        }
+        return $ds;
+    }
+
     public function getDatabase()
     {
         return $this->db;

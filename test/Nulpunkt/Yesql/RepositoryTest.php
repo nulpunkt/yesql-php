@@ -10,6 +10,21 @@ class RepositoryTest extends \TestHelper\TestCase
         $this->assertEquals([['id' => 1], ['id' => 2]], $this->repo->getAllIds());
     }
 
+    public function testWeCanInsert()
+    {
+        $lastInsertId = $this->repo->insertRow(['something' => 'new thing']);
+
+        $dataSet = $this->createQueryDataset(
+            ['t' => "SELECT * FROM test_table order by id desc limit 1"]
+        );
+
+        $expectedData = $this->createArrayDataSet(
+            ['t' => [['id' => $lastInsertId, 'something' => 'new thing']]]
+        );
+
+        $this->assertDataSetsEqual($expectedData, $dataSet);
+    }
+
     public function setup()
     {
         $this->repo = new Repository(

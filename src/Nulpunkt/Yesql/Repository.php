@@ -17,13 +17,7 @@ class Repository
     public function __call($name, $args)
     {
         $this->load();
-        $stmt = $this->db->prepare($this->methods[$name]);
-        if (isset($args[0])) {
-            $stmt->execute($args[0]);
-        } else {
-            $stmt->execute();
-        }
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $this->methods[$name]->execute($this->db, $args);
     }
 
     private function load()
@@ -40,8 +34,11 @@ class Repository
             if (strpos($line, '--') === 0) {
                 preg_match("/\bname:\s*([a-zA-Z_0-9]+)/", $line, $m);
                 $currentMethod = $m[1];
-            } elseif ($currentMethod && stripos($line, 'SELECT') === 0) {
-                $this->methods[$currentMethod] = $line;
+            } elseif ($currentMethod && stripos($line, 'select') === 0) {
+                $this->methods[$currentMethod] = new Statement\Select($line);
+                $currentMethod = null;
+            } elseif ($currentMethod && stripos($line, 'insert') === 0) {
+                $this->methods[$currentMethod] = new Statement\Insert($line);
                 $currentMethod = null;
             }
         }
