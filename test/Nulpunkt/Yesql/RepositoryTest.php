@@ -9,6 +9,12 @@ class RepositoryTest extends \TestHelper\TestCase
         $this->assertEquals(['id' => 1, 'something' => 'a thing'], $this->repo->getById(['id' => 1]));
     }
 
+    public function testWeCanGetOneRowIntoAnObject()
+    {
+        $this->assertInstanceOf('TestHelper\TestObject', $this->repo->getObjectById(['id' => '1']));
+        //$this->assertEquals(['id' => 1, 'something' => 'a thing'], $this->repo->getById(['id' => 1]));
+    }
+
     public function testWeCanGetManyRows()
     {
         $this->assertEquals([['id' => 1], ['id' => 2]], $this->repo->getAllIds());

@@ -1,6 +1,9 @@
 -- name: getById oneOrMany: one
 select * from test_table where id = :id
 
+-- name: getObjectById oneOrMany: one rowFunc: TestHelper\TestObject::fromRow
+select * from test_table where id = :id
+
 -- name: getAllIds
 select id from test_table;
 

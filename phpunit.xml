@@ -8,7 +8,6 @@
          forceCoversAnnotation="false"
          beStrictAboutTestsThatDoNotTestAnything="true"
          beStrictAboutOutputDuringTests="true"
-         checkForUnintentionallyCoveredCode="false"
          beStrictAboutTestSize="true"
          verbose="true">
   <testsuites>
