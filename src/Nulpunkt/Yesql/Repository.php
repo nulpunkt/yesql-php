@@ -67,7 +67,7 @@ class Repository
             $this->statements[$currentMethod] = new Statement\Insert($collectedSql, $modline);
             $currentMethod = null;
         } elseif (stripos($collectedSql, 'update') === 0 || stripos($collectedSql, 'delete') === 0) {
-            $this->statements[$currentMethod] = new Statement\Update($collectedSql);
+            $this->statements[$currentMethod] = new Statement\Update($collectedSql, $modline);
             $currentMethod = null;
         } else {
             throw new Exception\UnknownStatement($collectedSql);

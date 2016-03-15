@@ -17,5 +17,9 @@ insert into test_table (id, something) values (:id, :something)
 update test_table set something = :something
 where id = :id
 
+-- name: updateObject inFunc: ->toRow
+update test_table set something = :something
+where id = :id
+
 -- name: deleteById
 DELETE FROM test_table WHERE id = :id;

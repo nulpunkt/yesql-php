@@ -69,6 +69,25 @@ class RepositoryTest extends \TestHelper\TestCase
         $this->assertDataSetsEqual($expectedData, $dataSet);
     }
 
+    public function testWeCanUpdateWithObject()
+    {
+        $o = new \TestHelper\TestObject;
+        $o->id = 2;
+        $rowsAffected = $this->repo->updateObject($o);
+
+        $this->assertSame(1, $rowsAffected);
+
+        $dataSet = $this->createQueryDataset(
+            ['t' => "SELECT * FROM test_table where id = 2"]
+        );
+
+        $expectedData = $this->createArrayDataSet(
+            ['t' => [['id' => 2, 'something' => 'from object']]]
+        );
+
+        $this->assertDataSetsEqual($expectedData, $dataSet);
+    }
+
     public function testWeCanDelete()
     {
         $this->repo->deleteById(['id' => 1]);
