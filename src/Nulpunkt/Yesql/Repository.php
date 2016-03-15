@@ -36,22 +36,23 @@ class Repository
         $collectedSql = "";
         $modline = "";
         foreach (file($this->sqlFile) as $line) {
-            if (strpos($line, '--') === 0) {
+            $isComment = strpos($line, '--') === 0;
+            if ($isComment && ($nextMethod = $this->getMethodName($line))) {
                 $this->saveStatement($currentMethod, $collectedSql, $modline);
-                $currentMethod = $this->getMethodName($line);
                 $collectedSql = "";
+                $currentMethod = $nextMethod;
                 $modline = $line;
-            } else {
+            } elseif (!$isComment) {
                 $collectedSql .= $line;
             }
         }
         $this->saveStatement($currentMethod, $collectedSql, $modline);
     }
 
-    private function getMethodName($line)
+    public function getMethodName($line)
     {
         preg_match("/\bname:\s*(\S+)/", $line, $m);
-        return $m[1];
+        return isset($m[1]) ? $m[1] : null;
     }
 
     private function saveStatement($currentMethod, $collectedSql, $modline)

@@ -1,4 +1,5 @@
 -- name: getById oneOrMany: one
+-- This will make getById a method which fetch a test row from the database
 select * from test_table where id = :id
 
 -- name: getObjectById oneOrMany: one rowFunc: TestHelper\TestObject::fromRow

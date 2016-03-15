@@ -123,11 +123,6 @@ class RepositoryTest extends \TestHelper\TestCase
         );
     }
 
-    public function testLol()
-    {
-        $this->assertTrue(true);
-    }
-
     /**
      * @expectedException Nulpunkt\Yesql\Exception\MethodMissing
      */
