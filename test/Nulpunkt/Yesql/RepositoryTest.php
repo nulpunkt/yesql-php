@@ -37,7 +37,6 @@ class RepositoryTest extends \TestHelper\TestCase
 
     public function testWeCanInsertAnObject()
     {
-        $this->modline = 'inFunc: ->method weeee: oe.u';
         $o = new \TestHelper\TestObject;
         $lastInsertId = $this->repo->insertObject($o);
 
@@ -47,6 +46,27 @@ class RepositoryTest extends \TestHelper\TestCase
 
         $expectedData = $this->createArrayDataSet(
             ['t' => [['id' => $lastInsertId, 'something' => 'from object']]]
+        );
+
+        $this->assertDataSetsEqual($expectedData, $dataSet);
+    }
+
+    public function testWeCanInsertManyObjects()
+    {
+        $o = new \TestHelper\TestObject;
+        $lastInsertIds = $this->repo->insertManyObjects([$o, $o]);
+
+        $dataSet = $this->createQueryDataset(
+            ['t' => "SELECT * FROM test_table order by id desc limit 2"]
+        );
+
+        $expectedData = $this->createArrayDataSet(
+            [
+                't' => [
+                    ['id' => $lastInsertIds[1], 'something' => 'from object'],
+                    ['id' => $lastInsertIds[0], 'something' => 'from object'],
+                ]
+            ]
         );
 
         $this->assertDataSetsEqual($expectedData, $dataSet);
