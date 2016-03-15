@@ -35,6 +35,23 @@ class RepositoryTest extends \TestHelper\TestCase
         $this->assertDataSetsEqual($expectedData, $dataSet);
     }
 
+    public function testWeCanInsertAnObject()
+    {
+        $this->modline = 'inFunc: ->method weeee: oe.u';
+        $o = new \TestHelper\TestObject;
+        $lastInsertId = $this->repo->insertObject($o);
+
+        $dataSet = $this->createQueryDataset(
+            ['t' => "SELECT * FROM test_table order by id desc limit 1"]
+        );
+
+        $expectedData = $this->createArrayDataSet(
+            ['t' => [['id' => $lastInsertId, 'something' => 'from object']]]
+        );
+
+        $this->assertDataSetsEqual($expectedData, $dataSet);
+    }
+
     public function testWeCanUpdate()
     {
         $rowsAffected = $this->repo->updateRow(['something' => 'other thing updated', 'id' => 2]);
