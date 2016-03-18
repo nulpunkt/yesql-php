@@ -18,3 +18,6 @@ before_script:
 
 script:
   - ./vendor/bin/phpunit --configuration phpunit_travis_mysql.xml --verbose --coverage-text test/
+
+notifications:
+  email: false
