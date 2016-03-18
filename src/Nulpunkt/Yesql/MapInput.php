@@ -4,21 +4,22 @@ namespace Nulpunkt\Yesql;
 
 class MapInput
 {
+    private $statement;
     private $modline;
 
-    public function __construct($modline)
+    public function __construct($statement, $modline)
     {
+        $this->statement = $statement;
         $this->modline = $modline;
     }
 
-    public function map($i)
+    public function execute($db, $args)
     {
         $inFunc = $this->getInFunc();
         if ($inFunc) {
-            return call_user_func_array($inFunc, $i);
+            $args = call_user_func_array($inFunc, $args);
         }
-
-        return $i;
+        return $this->statement->execute($db, $args);
     }
 
     private function getInFunc()

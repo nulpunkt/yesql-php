@@ -21,7 +21,7 @@ class Repository
         if (isset($this->statements[$name])) {
             return $this->statements[$name]->execute(
                 $this->db,
-                $this->argumentMapper[$name]->map($args)
+                $args
             );
         } else {
             throw new Exception\MethodMissing($name);
@@ -40,8 +40,12 @@ class Repository
         foreach (file($this->sqlFile) as $line) {
             $isComment = strpos($line, '--') === 0;
             if ($isComment && ($nextMethod = $this->getMethodName($line))) {
-                $this->saveStatement($currentMethod, $collectedSql, $modline);
-                $this->argumentMapper[$currentMethod] = new MapInput($modline);
+                if ($currentMethod) {
+                    $this->statements[$currentMethod] = new MapInput(
+                        $this->createStatement($collectedSql, $modline),
+                        $modline
+                    );
+                }
                 $collectedSql = "";
                 $currentMethod = $nextMethod;
                 $modline = $line;
@@ -49,8 +53,10 @@ class Repository
                 $collectedSql .= $line;
             }
         }
-        $this->saveStatement($currentMethod, $collectedSql, $modline);
-        $this->argumentMapper[$currentMethod] = new MapInput($modline);
+        $this->statements[$currentMethod] = new MapInput(
+            $this->createStatement($collectedSql, $modline),
+            $modline
+        );
     }
 
     public function getMethodName($line)
@@ -59,21 +65,14 @@ class Repository
         return isset($m[1]) ? $m[1] : null;
     }
 
-    private function saveStatement($currentMethod, $collectedSql, $modline)
+    private function createStatement($collectedSql, $modline)
     {
-        if (!$currentMethod) {
-            return;
-        }
-
         if (stripos($collectedSql, 'select') === 0) {
-            $this->statements[$currentMethod] = new Statement\Select($collectedSql, $modline);
-            $currentMethod = null;
+            return new Statement\Select($collectedSql, $modline);
         } elseif (stripos($collectedSql, 'insert') === 0) {
-            $this->statements[$currentMethod] = new Statement\Insert($collectedSql, $modline);
-            $currentMethod = null;
+            return new Statement\Insert($collectedSql, $modline);
         } elseif (stripos($collectedSql, 'update') === 0 || stripos($collectedSql, 'delete') === 0) {
-            $this->statements[$currentMethod] = new Statement\Update($collectedSql, $modline);
-            $currentMethod = null;
+            return new Statement\Update($collectedSql, $modline);
         } else {
             throw new Exception\UnknownStatement($collectedSql);
         }
