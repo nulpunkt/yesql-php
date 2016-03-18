@@ -13,6 +13,6 @@ class TestObject
 
     public static function toRow($i)
     {
-        return ['id' => $i[0]->id, 'something' => 'from object'];
+        return ['id' => $i->id, 'something' => 'from object'];
     }
 }

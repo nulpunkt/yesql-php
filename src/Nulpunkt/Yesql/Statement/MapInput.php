@@ -15,7 +15,7 @@ class MapInput
     {
         $inFunc = $this->getInFunc();
         if ($inFunc) {
-            return call_user_func($inFunc, $i);
+            return call_user_func_array($inFunc, $i);
         }
 
         return $i;
