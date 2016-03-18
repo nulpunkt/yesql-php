@@ -17,6 +17,7 @@ matrix:
 before_script:
   - composer self-update
   - composer install --no-interaction --prefer-dist --dev
+  - mysql -e "create database IF NOT EXISTS yesql;" -uroot
 
 script:
   - ./vendor/bin/phpunit --configuration phpunit_travis_mysql.xml --verbose --coverage-text test/
