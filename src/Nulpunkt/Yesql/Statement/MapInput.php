@@ -1,6 +1,6 @@
 <?php
 
-namespace Nulpunkt\Yesql;
+namespace Nulpunkt\Yesql\Statement;
 
 class MapInput
 {
