@@ -24,29 +24,32 @@ select * from test_table;
 which will allow us to call
 
 ```php
-$r->getAllRows()
+$r->getAllRows();
 ```
 
 A database without rows is not of much use, lets insert some data:
 ```sql
 -- name: insertRow
-insert into test_table (something) values (:something)
+insert into test_table (something) values (?)
 
 ```
 ```php
 // returns the insertId
-$r->insertRow(['something' => 'a thing']) 
+$r->insertRow('a thing');
 ```
+
+As default, yesql will simply bind all params passed to the called function, to
+the query associated with it. We'll see how to make mappers further down.
 
 Maybe we need to fix some exsisting data
 ```sql
 -- name: updateRow
-update test_table set something = :something where id = :id
+update test_table set something = ? where id = ?
 
 ```
 ```php
 // returns the number of rows touched by the update
-$r->insertRow(['id' => 3, 'something' => 'fixed thing']) 
+$r->updateRow('fixed thing', 3);
 ```
 
 yesql-php support different modlines, lets say we know we only need to get one
@@ -54,11 +57,11 @@ row:
 
 ```sql
 -- name: getById oneOrMany: one
-select * from test_table where id = :id;
+select * from test_table where id = ?;
 ```
 ```php
 // Fetches one row with id 3
-$r->getById(['id' => 3]) 
+$r->getById(3);
 ```
 
 Maybe we want to return an object instead of just the row. By specifying a
@@ -66,33 +69,32 @@ rowFunc, we can have a function called, on every row returned:
 
 ```sql
 -- name: getObjectById oneOrMany: one rowFunc: MyObject::fromRow
-select * from test_table where id = :id
+select * from test_table where id = ?
 ```
 ```php
 class MyObject {
-  public fromRow($r) {
+  public static function fromRow($r) {
     return new self($r['id'], $r['something']);
   }
 }
 // return one instance of MyObject
-$r->getObjectById(['id' => 3]) 
+$r->getObjectById(3);
 ```
-
 
 Maybe we have a class with a `toRow` method we'd like to call on insert
 ```sql
--- name: insertObject inFunc: ->toRow
+-- name: insertObject inFunc: MyObject::toRow
 insert into test_table (id, something) values (:id, :something)
 ```
 ```php
 class MyObject {
-  public toRow() {
-    return ['id' => $this->id, 'something' => $this->something];
+  // $i will be the arguments passed to insertObject
+  public static function toRow($i, $o) {
+    return ['id' => $i, 'something' => $o->something];
   }
 }
 $o = new MyObject;
-// calls $o->toRow() and saves the returned value to the database
-$r->insertObject($o) 
+$r->insertObject($i, $o) 
 ```
 
 ## Todo
