@@ -6,8 +6,8 @@ class Repository
 {
     private $db;
     private $sqlFile;
-    private $statements;
-    private $argumentMapper;
+    private $statements = [];
+    private $argumentMapper = [];
 
     public function __construct(\PDO $db, $sqlFile)
     {
@@ -33,9 +33,6 @@ class Repository
         if ($this->statements) {
             return;
         }
-
-        $this->statements = [];
-        $this->argumentMapper = [];
 
         $currentMethod = null;
         $collectedSql = "";
