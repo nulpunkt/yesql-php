@@ -12,7 +12,6 @@ class RepositoryTest extends \TestHelper\TestCase
     public function testWeCanGetOneRowIntoAnObject()
     {
         $this->assertInstanceOf('TestHelper\TestObject', $this->repo->getObjectById(['id' => '1']));
-        //$this->assertEquals(['id' => 1, 'something' => 'a thing'], $this->repo->getById(['id' => 1]));
     }
 
     public function testWeCanGetManyRows()
@@ -142,11 +141,19 @@ class RepositoryTest extends \TestHelper\TestCase
 
     public function setup()
     {
+        parent::setup();
         $this->repo = new Repository($this->getDatabase(), __DIR__ . "/test.sql");
     }
 
     protected function getDataSet()
     {
-        return $this->createArrayDataSet([]);
+        return $this->createArrayDataSet(
+            [
+                'test_table' => [
+                    ['id' => 1, 'something' => 'a thing'],
+                    ['id' => 2, 'something' => 'an other thing!'],
+                ]
+            ]
+        );
     }
 }
