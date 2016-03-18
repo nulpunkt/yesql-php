@@ -16,7 +16,7 @@ You need to make a repository of queries:
 
 ```php
 $pdo = new PDO($host, $user, $pass); // Fill in the blanks
-$r = new Nulpunkt\Yesql\Repository($pdo, "my-queries/user.sql");
+$r = new Nulpunkt\Yesql\Repository($pdo, "my-queries/queries.sql");
 ```
 in `queries.sql` we can put:
 
