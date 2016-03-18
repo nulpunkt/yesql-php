@@ -96,9 +96,3 @@ class MyObject {
 $o = new MyObject;
 $r->insertObject($i, $o) 
 ```
-
-## Todo
-
- * Travis tests to make sure we work on different db
- * Moar niceness
- * Packist
