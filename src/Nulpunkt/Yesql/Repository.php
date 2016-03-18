@@ -7,6 +7,7 @@ class Repository
     private $db;
     private $sqlFile;
     private $statements;
+    private $argumentMapper;
 
     public function __construct(\PDO $db, $sqlFile)
     {
@@ -18,7 +19,10 @@ class Repository
     {
         $this->load();
         if (isset($this->statements[$name])) {
-            return $this->statements[$name]->execute($this->db, $args);
+            return $this->statements[$name]->execute(
+                $this->db,
+                $this->argumentMapper[$name]->map($args)
+            );
         } else {
             throw new Exception\MethodMissing($name);
         }
@@ -31,6 +35,7 @@ class Repository
         }
 
         $this->statements = [];
+        $this->argumentMapper = [];
 
         $currentMethod = null;
         $collectedSql = "";
@@ -39,6 +44,7 @@ class Repository
             $isComment = strpos($line, '--') === 0;
             if ($isComment && ($nextMethod = $this->getMethodName($line))) {
                 $this->saveStatement($currentMethod, $collectedSql, $modline);
+                $this->argumentMapper[$currentMethod] = new MapInput($modline);
                 $collectedSql = "";
                 $currentMethod = $nextMethod;
                 $modline = $line;
@@ -47,6 +53,7 @@ class Repository
             }
         }
         $this->saveStatement($currentMethod, $collectedSql, $modline);
+        $this->argumentMapper[$currentMethod] = new MapInput($modline);
     }
 
     public function getMethodName($line)

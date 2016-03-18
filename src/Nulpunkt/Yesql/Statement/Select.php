@@ -16,7 +16,6 @@ class Select
 
     public function execute($db, $args)
     {
-
         $stmt = $db->prepare($this->sql);
         if (isset($args)) {
             $stmt->execute($args);

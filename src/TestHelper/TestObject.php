@@ -15,4 +15,9 @@ class TestObject
     {
         return ['id' => $i->id, 'something' => 'from object'];
     }
+
+    public static function mappedParams($id)
+    {
+        return ['id' => $id];
+    }
 }

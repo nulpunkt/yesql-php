@@ -9,14 +9,13 @@ class Update
     public function __construct($sql, $modline)
     {
         $this->sql = $sql;
-        $this->mi = new MapInput($modline);
     }
 
     public function execute($db, $args)
     {
         $stmt = $db->prepare($this->sql);
         if (isset($args)) {
-            $stmt->execute($this->mi->map($args));
+            $stmt->execute($args);
         } else {
             $stmt->execute();
         }

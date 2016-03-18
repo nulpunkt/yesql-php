@@ -11,13 +11,12 @@ class Insert
     {
         $this->sql = $sql;
         $this->modline = $modline;
-        $this->mi = new MapInput($modline);
     }
 
     public function execute($db, $args)
     {
         $stmt = $db->prepare($this->sql);
-        $stmt->execute($this->mi->map($args));
+        $stmt->execute($args);
         return $db->lastInsertId();
     }
 

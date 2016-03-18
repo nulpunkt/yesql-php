@@ -5,6 +5,9 @@ select * from test_table where id = ?
 -- name: getObjectById oneOrMany: one rowFunc: TestHelper\TestObject::fromRow
 select * from test_table where id = ?
 
+-- name: getByIdMapped oneOrMany: one inFunc: TestHelper\TestObject::mappedParams
+select * from test_table where id = :id
+
 -- name: getAllIds
 select id from test_table;
 

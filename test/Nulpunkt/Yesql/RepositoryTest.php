@@ -14,6 +14,11 @@ class RepositoryTest extends \TestHelper\TestCase
         $this->assertInstanceOf('TestHelper\TestObject', $this->repo->getObjectById(1));
     }
 
+    public function testWeCanMapParamsInSelect()
+    {
+        $this->assertEquals(['id' => 1, 'something' => 'a thing'], $this->repo->getByIdMapped(1));
+    }
+
     public function testWeCanGetManyRows()
     {
         $this->assertEquals([['id' => 1], ['id' => 2]], $this->repo->getAllIds());
