@@ -8,6 +8,9 @@ php:
   - 7.0
   - hhvm
 
+services:
+    - mysql
+
 matrix:
   fast_finish: true
 
@@ -16,4 +19,4 @@ before_script:
   - composer install --no-interaction --prefer-dist --dev
 
 script:
-  - ./vendor/bin/phpunit --verbose --coverage-text test/
+  - ./vendor/bin/phpunit --configuration phpunit_travis_mysql.xml --verbose --coverage-text test/
