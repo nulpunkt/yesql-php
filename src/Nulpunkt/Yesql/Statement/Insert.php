@@ -6,6 +6,7 @@ class Insert
 {
     private $sql;
     private $modline;
+    private $stmt;
 
     public function __construct($sql, $modline)
     {
@@ -15,8 +16,11 @@ class Insert
 
     public function execute($db, $args)
     {
-        $stmt = $db->prepare($this->sql);
-        $stmt->execute($args);
+        if (!$this->stmt) {
+            $this->stmt = $db->prepare($this->sql);
+        }
+
+        $this->stmt->execute($args);
         return $db->lastInsertId();
     }
 

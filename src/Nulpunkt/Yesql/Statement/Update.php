@@ -5,6 +5,7 @@ namespace Nulpunkt\Yesql\Statement;
 class Update
 {
     private $sql;
+    private $stmt;
 
     public function __construct($sql, $modline)
     {
@@ -13,13 +14,16 @@ class Update
 
     public function execute($db, $args)
     {
-        $stmt = $db->prepare($this->sql);
-        if (isset($args)) {
-            $stmt->execute($args);
-        } else {
-            $stmt->execute();
+        if (!$this->stmt) {
+            $this->stmt = $db->prepare($this->sql);
         }
 
-        return $stmt->rowCount();
+        if (isset($args)) {
+            $this->stmt->execute($args);
+        } else {
+            $this->stmt->execute();
+        }
+
+        return $this->stmt->rowCount();
     }
 }

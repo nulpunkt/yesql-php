@@ -7,6 +7,7 @@ class Select
     private $sql;
     private $modline;
     private $rowFunc;
+    private $stmt;
 
     public function __construct($sql, $modline)
     {
@@ -16,18 +17,21 @@ class Select
 
     public function execute($db, $args)
     {
-        $stmt = $db->prepare($this->sql);
+        if (!$this->stmt) {
+            $this->stmt = $db->prepare($this->sql);
+        }
+
         if (isset($args)) {
-            $stmt->execute($args);
+            $this->stmt->execute($args);
         } else {
-            $stmt->execute();
+            $this->stmt->execute();
         }
 
         $this->setRowFunc();
         if ($this->oneOrMany() == 'one') {
-            return $this->prepareElement($stmt->fetch(\PDO::FETCH_ASSOC));
+            return $this->prepareElement($this->stmt->fetch(\PDO::FETCH_ASSOC));
         } else {
-            return array_map([$this, 'prepareElement'], $stmt->fetchAll(\PDO::FETCH_ASSOC));
+            return array_map([$this, 'prepareElement'], $this->stmt->fetchAll(\PDO::FETCH_ASSOC));
         }
     }
 
