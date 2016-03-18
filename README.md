@@ -1,4 +1,4 @@
-# yesql-php
+# yesql-php [![Build Status](https://travis-ci.org/nulpunkt/yesql-php.png?branch=master)](https://travis-ci.org/nulpunkt/yesql-php)
 
 I'm trying to build a clone of the wonderful yesql library from clojure. This
 is very much work in progress.
