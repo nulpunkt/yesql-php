@@ -14,8 +14,8 @@ class MapInput
     public function map($i)
     {
         $inFunc = $this->getInFunc();
-        if ($inFunc && strpos($inFunc, '->') === 0) {
-            return call_user_func([$i, substr($inFunc, 2)]);
+        if ($inFunc) {
+            return call_user_func($inFunc, $i);
         }
 
         return $i;

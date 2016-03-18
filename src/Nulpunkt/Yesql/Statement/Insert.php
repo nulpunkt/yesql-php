@@ -17,17 +17,8 @@ class Insert
     public function execute($db, $args)
     {
         $stmt = $db->prepare($this->sql);
-        if ($this->oneOrMany() == 'one') {
-            $stmt->execute($this->mi->map($args[0]));
-            return $db->lastInsertId();
-        } else {
-            $ids = [];
-            foreach ($args[0] as $in) {
-                $stmt->execute($this->mi->map($in));
-                $ids[] = $db->lastInsertId();
-            }
-            return $ids;
-        }
+        $stmt->execute($this->mi->map($args));
+        return $db->lastInsertId();
     }
 
     private function oneOrMany()

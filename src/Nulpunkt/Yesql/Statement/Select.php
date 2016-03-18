@@ -18,8 +18,8 @@ class Select
     {
 
         $stmt = $db->prepare($this->sql);
-        if (isset($args[0])) {
-            $stmt->execute($args[0]);
+        if (isset($args)) {
+            $stmt->execute($args);
         } else {
             $stmt->execute();
         }

@@ -15,8 +15,8 @@ class Update
     public function execute($db, $args)
     {
         $stmt = $db->prepare($this->sql);
-        if (isset($args[0])) {
-            $stmt->execute($this->mi->map($args[0]));
+        if (isset($args)) {
+            $stmt->execute($this->mi->map($args));
         } else {
             $stmt->execute();
         }

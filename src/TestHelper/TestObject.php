@@ -11,8 +11,8 @@ class TestObject
         return new self($row);
     }
 
-    public function toRow()
+    public static function toRow($i)
     {
-        return ['id' => $this->id, 'something' => 'from object'];
+        return ['id' => $i[0]->id, 'something' => 'from object'];
     }
 }

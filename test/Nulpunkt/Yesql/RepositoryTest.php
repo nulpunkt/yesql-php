@@ -6,12 +6,12 @@ class RepositoryTest extends \TestHelper\TestCase
 {
     public function testWeCanGetOneRow()
     {
-        $this->assertEquals(['id' => 1, 'something' => 'a thing'], $this->repo->getById(['id' => 1]));
+        $this->assertEquals(['id' => 1, 'something' => 'a thing'], $this->repo->getById(1));
     }
 
     public function testWeCanGetOneRowIntoAnObject()
     {
-        $this->assertInstanceOf('TestHelper\TestObject', $this->repo->getObjectById(['id' => '1']));
+        $this->assertInstanceOf('TestHelper\TestObject', $this->repo->getObjectById(1));
     }
 
     public function testWeCanGetManyRows()
@@ -21,7 +21,7 @@ class RepositoryTest extends \TestHelper\TestCase
 
     public function testWeCanInsert()
     {
-        $lastInsertId = $this->repo->insertRow(['something' => 'new thing']);
+        $lastInsertId = $this->repo->insertRow('new thing');
 
         $dataSet = $this->createQueryDataset(
             ['t' => "SELECT * FROM test_table order by id desc limit 1"]
@@ -50,30 +50,9 @@ class RepositoryTest extends \TestHelper\TestCase
         $this->assertDataSetsEqual($expectedData, $dataSet);
     }
 
-    public function testWeCanInsertManyObjects()
-    {
-        $o = new \TestHelper\TestObject;
-        $lastInsertIds = $this->repo->insertManyObjects([$o, $o]);
-
-        $dataSet = $this->createQueryDataset(
-            ['t' => "SELECT * FROM test_table order by id desc limit 2"]
-        );
-
-        $expectedData = $this->createArrayDataSet(
-            [
-                't' => [
-                    ['id' => $lastInsertIds[1], 'something' => 'from object'],
-                    ['id' => $lastInsertIds[0], 'something' => 'from object'],
-                ]
-            ]
-        );
-
-        $this->assertDataSetsEqual($expectedData, $dataSet);
-    }
-
     public function testWeCanUpdate()
     {
-        $rowsAffected = $this->repo->updateRow(['something' => 'other thing updated', 'id' => 2]);
+        $rowsAffected = $this->repo->updateRow('other thing updated', 2);
 
         $this->assertSame(1, $rowsAffected);
 
@@ -109,7 +88,7 @@ class RepositoryTest extends \TestHelper\TestCase
 
     public function testWeCanDelete()
     {
-        $this->repo->deleteById(['id' => 1]);
+        $this->repo->deleteById(1);
 
         $dataSet = $this->createQueryDataset(
             ['t' => 'SELECT * FROM test_table WHERE id = 1']
