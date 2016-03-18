@@ -1,10 +1,14 @@
 # yesql-php [![Build Status](https://travis-ci.org/nulpunkt/yesql-php.png?branch=master)](https://travis-ci.org/nulpunkt/yesql-php)
 
-I'm trying to build a clone of the wonderful yesql library from clojure. This
-is very much work in progress.
-
+I'm trying to build a clone of the wonderful yesql library from clojure.
 The idea is to have a seperate sql file for queries, which you can then access
 as methods on a class.
+
+## Installation
+Use composer to require:
+```
+"nulpunkt/yesql-php": "^1"
+```
 
 # Examples!
 
