@@ -2,7 +2,7 @@
 
 namespace Nulpunkt\Yesql\Statement;
 
-class Update
+class Update implements Statement
 {
     private $sql;
     private $stmt;

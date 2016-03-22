@@ -2,7 +2,7 @@
 
 namespace Nulpunkt\Yesql\Statement;
 
-class MapInput
+class MapInput implements Statement
 {
     private $statement;
     private $modline;
@@ -11,13 +11,13 @@ class MapInput
     {
         $this->statement = $statement;
         $this->modline = $modline;
+        $this->inFunc = $this->getInFunc();
     }
 
     public function execute($db, $args)
     {
-        $inFunc = $this->getInFunc();
-        if ($inFunc) {
-            $args = call_user_func_array($inFunc, $args);
+        if ($this->inFunc) {
+            $args = call_user_func_array($this->inFunc, $args);
         }
         return $this->statement->execute($db, $args);
     }
@@ -25,6 +25,12 @@ class MapInput
     private function getInFunc()
     {
         preg_match("/\inFunc:\s*(\S+)/", $this->modline, $m);
-        return isset($m[1]) ? $m[1] : null;
+        $f = isset($m[1]) ? $m[1] : null;
+
+        if ($f && !is_callable($f)) {
+            throw new \Nulpunkt\Yesql\Exception\MethodMissing("{$f} is not callable");
+        }
+
+        return $f;
     }
 }

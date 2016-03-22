@@ -13,15 +13,12 @@ class Repository
     {
         $this->db = $db;
         $this->sqlFile = $sqlFile;
+
+        $this->statements = (new Statement\Factory)->createStatements($this->sqlFile);
     }
 
     public function __call($name, $args)
     {
-        if (!$this->statements) {
-            $f = new Statement\Factory;
-            $this->statements = $f->createStatements($this->sqlFile);
-        }
-
         if (isset($this->statements[$name])) {
             return $this->statements[$name]->execute($this->db, $args);
         } else {

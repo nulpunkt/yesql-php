@@ -2,7 +2,7 @@
 
 namespace Nulpunkt\Yesql\Statement;
 
-class Select
+class Select implements Statement
 {
     private $sql;
     private $modline;

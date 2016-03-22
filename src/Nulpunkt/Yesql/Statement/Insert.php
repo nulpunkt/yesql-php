@@ -2,7 +2,7 @@
 
 namespace Nulpunkt\Yesql\Statement;
 
-class Insert
+class Insert implements Statement
 {
     private $sql;
     private $modline;
