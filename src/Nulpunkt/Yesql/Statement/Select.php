@@ -13,6 +13,7 @@ class Select implements Statement
     {
         $this->sql = $sql;
         $this->modline = $modline;
+        $this->rowFunc = $this->getRowFunc();
     }
 
     public function execute($db, $args)
@@ -27,7 +28,6 @@ class Select implements Statement
             $this->stmt->execute();
         }
 
-        $this->setRowFunc();
         if ($this->oneOrMany() == 'one') {
             return $this->prepareElement($this->stmt->fetch(\PDO::FETCH_ASSOC));
         } else {
@@ -41,10 +41,16 @@ class Select implements Statement
         return isset($m[1]) ? $m[1] : "many";
     }
 
-    private function setRowFunc()
+    private function getRowFunc()
     {
         preg_match('/rowFunc:\s*(\S+)/', $this->modline, $m);
-        $this->rowFunc = isset($m[1]) ? $m[1] : [$this, 'identity'];
+        $f = isset($m[1]) ? $m[1] : [$this, 'identity'];
+
+        if ($f && !is_callable($f)) {
+            throw new \Nulpunkt\Yesql\Exception\MethodMissing("{$f} is not callable");
+        }
+
+        return $f;
     }
 
     private function prepareElement($res)
