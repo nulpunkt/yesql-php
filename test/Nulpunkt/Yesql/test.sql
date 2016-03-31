@@ -2,7 +2,10 @@
 -- This will make getById a method which fetch a test row from the database
 select * from test_table where id = ?
 
--- name: getObjectById oneOrMany: one rowFunc: TestHelper\TestObject::fromRow
+-- name: getObjectByIdManually oneOrMany: one rowFunc: TestHelper\TestObject::fromRow
+select * from test_table where id = ?
+
+-- name: getObjectByIdAutomagically oneOrMany: one rowClass: TestHelper\TestObject
 select * from test_table where id = ?
 
 -- name: getByIdMapped oneOrMany: one inFunc: TestHelper\TestObject::mappedParams

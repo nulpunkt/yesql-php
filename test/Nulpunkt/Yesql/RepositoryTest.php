@@ -9,9 +9,14 @@ class RepositoryTest extends \TestHelper\TestCase
         $this->assertEquals(['id' => 1, 'something' => 'a thing'], $this->repo->getById(1));
     }
 
-    public function testWeCanGetOneRowIntoAnObject()
+    public function testWeCanGetOneRowIntoAnObjectManually()
     {
-        $this->assertInstanceOf('TestHelper\TestObject', $this->repo->getObjectById(1));
+        $this->assertInstanceOf('TestHelper\TestObject', $this->repo->getObjectByIdManually(1));
+    }
+
+    public function testWeCanGetOneRowIntoAnObjectAutomagically()
+    {
+        $this->assertInstanceOf('TestHelper\TestObject', $this->repo->getObjectByIdAutomagically(1));
     }
 
     public function testWeCanMapParamsInSelect()
@@ -119,7 +124,25 @@ class RepositoryTest extends \TestHelper\TestCase
      */
     public function testWeComplainAboutSqlWeDontKnowWhatToDoAbout()
     {
-        $r = new Repository($this->getDatabase(), __DIR__ . "/unknown.sql");
+        $r = new Repository($this->getDatabase(), __DIR__ . "/unknown_statement.sql");
+        $r->describeSomething();
+    }
+
+    /**
+     * @expectedException Nulpunkt\Yesql\Exception\MethodMissing
+     */
+    public function testWeComplainAboutNonExsistingRowFunc()
+    {
+        $r = new Repository($this->getDatabase(), __DIR__ . "/unknown_rowfunc.sql");
+        $r->describeSomething();
+    }
+
+    /**
+     * @expectedException Nulpunkt\Yesql\Exception\ClassNotFound
+     */
+    public function testWeComplainAboutNonExsistingRowClass()
+    {
+        $r = new Repository($this->getDatabase(), __DIR__ . "/unknown_rowclass.sql");
         $r->describeSomething();
     }
 

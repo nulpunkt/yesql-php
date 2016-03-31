@@ -14,6 +14,7 @@ class Select implements Statement
         $this->sql = $sql;
         $this->modline = $modline;
         $this->rowFunc = $this->getRowFunc();
+        $this->rowClass = $this->getRowClass();
     }
 
     public function execute($db, $args)
@@ -28,17 +29,33 @@ class Select implements Statement
             $this->stmt->execute();
         }
 
-        if ($this->oneOrMany() == 'one') {
-            return $this->prepareElement($this->stmt->fetch(\PDO::FETCH_ASSOC));
+        if ($this->rowClass) {
+            $this->stmt->setFetchMode(\PDO::FETCH_CLASS, $this->rowClass);
         } else {
-            return array_map([$this, 'prepareElement'], $this->stmt->fetchAll(\PDO::FETCH_ASSOC));
+            $this->stmt->setFetchMode(\PDO::FETCH_ASSOC);
         }
+
+        $res = array_map([$this, 'prepareElement'], $this->stmt->fetchAll());
+
+        return $this->oneOrMany() == 'one' ? $res[0] : $res;
     }
 
     private function oneOrMany()
     {
         preg_match("/\boneOrMany:\s*(one|many)/", $this->modline, $m);
         return isset($m[1]) ? $m[1] : "many";
+    }
+
+    private function getRowClass()
+    {
+        preg_match('/rowClass:\s*(\S+)/', $this->modline, $m);
+        $c = @$m[1];
+
+        if ($c && !class_exists($c)) {
+            throw new \Nulpunkt\Yesql\Exception\ClassNotFound("{$c} is not a class");
+        }
+
+        return $c;
     }
 
     private function getRowFunc()
