@@ -68,20 +68,33 @@ select * from test_table where id = ?;
 $r->getById(3);
 ```
 
-Maybe we want to return an object instead of just the row. By specifying a
+Maybe we want to return a modified version of the row. By specifying a
 rowFunc, we can have a function called, on every row returned:
 
 ```sql
--- name: getObjectById oneOrMany: one rowFunc: MyObject::fromRow
+-- name: getMappedById oneOrMany: one rowFunc: MyObject::mapRow
 select * from test_table where id = ?
 ```
 ```php
 class MyObject {
-  public static function fromRow($r) {
-    return new self($r['id'], $r['something']);
+  public static function mapRow($r) {
+    return ['id' => $r['id'], 'ohwow' => $r['something']];
   }
 }
-// return one instance of MyObject
+// return one row, with keys id and ohwow
+$r->getMappedById(3);
+```
+
+Sometimes an object is want you want, rowClass got your back:
+
+```sql
+-- name: getObjectById oneOrMany: one rowClass: MyObject
+select * from test_table where id = ?
+```
+```php
+class MyObject {
+}
+// return one row, which is an instance of MyObject with id and something set
 $r->getObjectById(3);
 ```
 
