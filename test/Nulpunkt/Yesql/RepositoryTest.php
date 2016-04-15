@@ -9,6 +9,11 @@ class RepositoryTest extends \TestHelper\TestCase
         $this->assertEquals(['id' => 1, 'something' => 'a thing'], $this->repo->getById(1));
     }
 
+    public function testWeCanGetARowThatDoesNotExsist()
+    {
+        $this->assertNull($this->repo->getById(11));
+    }
+
     public function testWeCanGetOneRowIntoAnObjectManually()
     {
         $this->assertInstanceOf('TestHelper\TestObject', $this->repo->getObjectByIdManually(1));

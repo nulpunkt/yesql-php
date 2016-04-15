@@ -37,7 +37,7 @@ class Select implements Statement
 
         $res = array_map([$this, 'prepareElement'], $this->stmt->fetchAll());
 
-        return $this->oneOrMany() == 'one' ? $res[0] : $res;
+        return $this->oneOrMany() == 'one' ? @$res[0] : $res;
     }
 
     private function oneOrMany()
