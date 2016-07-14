@@ -4,7 +4,7 @@ namespace Nulpunkt\Yesql;
 
 class Repository
 {
-    private $db;
+    protected $db;
     private $sqlFile;
     private $statements = [];
     private $argumentMapper = [];
