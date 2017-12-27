@@ -8,12 +8,16 @@
             "email": "nulpunkt@gmail.com"
         }
     ],
+    "scripts": {
+        "phpcs": "phpcs",
+        "phpunit": "phpunit"
+    },
     "require": {
     },
     "require-dev": {
 		"squizlabs/php_codesniffer": "~2.5",
-        "phpunit/phpunit": "~5.2",
-        "phpunit/dbunit": "~2.0"
+    "phpunit/phpunit": "~5.2",
+    "phpunit/dbunit": "~2.0"
 
     },
     "autoload": {
