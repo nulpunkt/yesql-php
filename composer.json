@@ -12,8 +12,8 @@
     },
     "require-dev": {
 		"squizlabs/php_codesniffer": "~2.5",
-        "phpunit/phpunit": "~5.2",
-        "phpunit/dbunit": "~2.0"
+        "phpunit/phpunit": "~6",
+        "phpunit/dbunit": "~3"
 
     },
     "autoload": {

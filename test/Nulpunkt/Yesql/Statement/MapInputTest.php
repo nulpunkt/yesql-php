@@ -2,11 +2,11 @@
 
 namespace Nulpunkt\Yesql\Statement;
 
-class MapInputTest extends \PHPUnit_Framework_TestCase
+class MapInputTest extends \TestHelper\UnitTestCase
 {
     public function testWeCanExecuteAStatement()
     {
-        $s = $this->getMock('Nulpunkt\Yesql\Statement\Statement');
+        $s = $this->createMock('Nulpunkt\Yesql\Statement\Statement');
         $s->expects($this->once())->method('execute')
             ->with('db', ['id'=> 3]);
 
@@ -20,7 +20,7 @@ class MapInputTest extends \PHPUnit_Framework_TestCase
         $o->id = 3;
         $modline = 'inFunc: \TestHelper\TestObject::toRow';
 
-        $s = $this->getMock('Nulpunkt\Yesql\Statement\Statement');
+        $s = $this->createMock('Nulpunkt\Yesql\Statement\Statement');
         $s->expects($this->once())->method('execute')
             ->with('db', ['id'=> 3, 'something' => 'from object']);
 

@@ -2,7 +2,7 @@
 
 namespace Nulpunkt\Yesql\Statement;
 
-class SelectTest extends \PHPUnit_Framework_TestCase
+class SelectTest extends \TestHelper\UnitTestCase
 {
     /**
      * @expectedException \Nulpunkt\Yesql\Exception\MethodMissing
