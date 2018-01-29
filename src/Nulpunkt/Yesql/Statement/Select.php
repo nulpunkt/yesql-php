@@ -8,6 +8,7 @@ class Select implements Statement
     private $modline;
     private $rowFunc;
     private $stmt;
+    private $fetchMode;
 
     public function __construct($sql, $modline)
     {
@@ -15,6 +16,7 @@ class Select implements Statement
         $this->modline = $modline;
         $this->rowFunc = $this->getRowFunc();
         $this->rowClass = $this->getRowClass();
+        $this->fetchMode = $this->getFetchMode();
     }
 
     public function execute($db, $args)
@@ -32,7 +34,7 @@ class Select implements Statement
         if ($this->rowClass) {
             $this->stmt->setFetchMode(\PDO::FETCH_CLASS, $this->rowClass);
         } else {
-            $this->stmt->setFetchMode($this->getFetchMode());
+            $this->stmt->setFetchMode($this->fetchMode);
         }
 
         $res = array_map([$this, 'prepareElement'], $this->stmt->fetchAll());
