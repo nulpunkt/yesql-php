@@ -67,7 +67,7 @@ class Select implements Statement
 
         $fetchMode = "\PDO::FETCH_$c";
 
-        $c = constant($fetchMode);
+        $c = @constant($fetchMode);
 
         if (!$c) {
             throw new \Nulpunkt\Yesql\Exception\UnknownFetchMode("{$fetchMode} is not a PDO fetch mode");
