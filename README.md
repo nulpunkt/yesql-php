@@ -70,6 +70,16 @@ select * from test_table where id = ?;
 $r->getById(3);
 ```
 
+Or we want to define the PDO fetch mode. (http://php.net/manual/en/pdo.constants.php#pdo.constants.fetch-lazy)
+```sql
+-- name: getKeyed fetchMode: KEY_PAIR
+select id, something from test_table
+```
+```php
+// returns an array with the id column as key and something column as value
+$r->getKeyed();
+```
+
 Maybe we want to return a modified version of the row. By specifying a
 rowFunc, we can have a function called, on every row returned:
 

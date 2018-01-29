@@ -11,4 +11,12 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     {
         new Select(null, 'rowFunc: sntaoheu');
     }
+
+    /**
+     * @expectedException \Nulpunkt\Yesql\Exception\UnknownFetchMode
+     */
+    public function testWeComplainIfFetchModeIsUnknown()
+    {
+        new Select(null, 'fetchMode: sntaoheu');
+    }
 }

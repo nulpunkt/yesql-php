@@ -32,7 +32,7 @@ class Select implements Statement
         if ($this->rowClass) {
             $this->stmt->setFetchMode(\PDO::FETCH_CLASS, $this->rowClass);
         } else {
-            $this->stmt->setFetchMode(\PDO::FETCH_ASSOC);
+            $this->stmt->setFetchMode($this->getFetchMode());
         }
 
         $res = array_map([$this, 'prepareElement'], $this->stmt->fetchAll());
@@ -53,6 +53,22 @@ class Select implements Statement
 
         if ($c && !class_exists($c)) {
             throw new \Nulpunkt\Yesql\Exception\ClassNotFound("{$c} is not a class");
+        }
+
+        return $c;
+    }
+
+    private function getFetchMode()
+    {
+        preg_match('/fetchMode:\s*(\S+)/', $this->modline, $m);
+        $c = isset($m[1]) ? $m[1] : 'ASSOC';
+
+        $fetchMode = "\PDO::FETCH_$c";
+
+        $c = constant($fetchMode);
+
+        if (!$c) {
+            throw new \Nulpunkt\Yesql\Exception\UnknownFetchMode("{$fetchMode} is not a PDO fetch mode");
         }
 
         return $c;
