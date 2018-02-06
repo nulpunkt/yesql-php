@@ -71,13 +71,25 @@ $r->getById(3);
 ```
 
 Or we want to define the PDO fetch mode. (http://php.net/manual/en/pdo.constants.php#pdo.constants.fetch-lazy)
+
+The available fetchmodes are: `assoc`, `class`, `column`, `keypair`, `named`
 ```sql
--- name: getKeyed fetchMode: KEY_PAIR
+-- name: getKeyed fetchMode: keypair
 select id, something from test_table
+-- name: getColumn fetchMode: column
+select id from test_table
+-- name: getObjectById oneOrMany: one fetchMod: class(MyObject)
+select * from test_table where id = ?
 ```
 ```php
 // returns an array with the id column as key and something column as value
 $r->getKeyed();
+// returns a one-dimensional array of ids
+$r->getColumn();
+// returns one row, which is an instance of MyObject with id and something set
+class MyObject {
+}
+$r->getObjectById(3);
 ```
 
 Maybe we want to return a modified version of the row. By specifying a
@@ -95,19 +107,6 @@ class MyObject {
 }
 // return one row, with keys id and ohwow
 $r->getMappedById(3);
-```
-
-Sometimes an object is want you want, rowClass got your back:
-
-```sql
--- name: getObjectById oneOrMany: one rowClass: MyObject
-select * from test_table where id = ?
-```
-```php
-class MyObject {
-}
-// return one row, which is an instance of MyObject with id and something set
-$r->getObjectById(3);
 ```
 
 Maybe we have a class with a `toRow` method we'd like to call on insert

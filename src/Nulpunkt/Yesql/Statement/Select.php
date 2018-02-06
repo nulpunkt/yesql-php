@@ -2,21 +2,23 @@
 
 namespace Nulpunkt\Yesql\Statement;
 
+use Nulpunkt\Yesql\FetchMode\FetchMode;
+
 class Select implements Statement
 {
     private $sql;
     private $modline;
     private $rowFunc;
     private $stmt;
+    /** @var \Nulpunkt\Yesql\FetchMode\FetchMode  */
     private $fetchMode;
 
-    public function __construct($sql, $modline)
+    public function __construct($sql, $modline, FetchMode $fetchMode)
     {
         $this->sql = $sql;
         $this->modline = $modline;
         $this->rowFunc = $this->getRowFunc();
-        $this->rowClass = $this->getRowClass();
-        $this->fetchMode = $this->getFetchMode();
+        $this->fetchMode = $fetchMode;
     }
 
     public function execute($db, $args)
@@ -31,11 +33,7 @@ class Select implements Statement
             $this->stmt->execute();
         }
 
-        if ($this->rowClass) {
-            $this->stmt->setFetchMode(\PDO::FETCH_CLASS, $this->rowClass);
-        } else {
-            $this->stmt->setFetchMode($this->fetchMode);
-        }
+        $this->fetchMode->setMode($this->stmt);
 
         $res = array_map([$this, 'prepareElement'], $this->stmt->fetchAll());
 
@@ -46,34 +44,6 @@ class Select implements Statement
     {
         preg_match("/\boneOrMany:\s*(one|many)/", $this->modline, $m);
         return isset($m[1]) ? $m[1] : "many";
-    }
-
-    private function getRowClass()
-    {
-        preg_match('/rowClass:\s*(\S+)/', $this->modline, $m);
-        $c = @$m[1];
-
-        if ($c && !class_exists($c)) {
-            throw new \Nulpunkt\Yesql\Exception\ClassNotFound("{$c} is not a class");
-        }
-
-        return $c;
-    }
-
-    private function getFetchMode()
-    {
-        preg_match('/fetchMode:\s*(\S+)/', $this->modline, $m);
-        $c = isset($m[1]) ? $m[1] : 'ASSOC';
-
-        $fetchMode = "\PDO::FETCH_$c";
-
-        $c = @constant($fetchMode);
-
-        if (!$c) {
-            throw new \Nulpunkt\Yesql\Exception\UnknownFetchMode("{$fetchMode} is not a PDO fetch mode");
-        }
-
-        return $c;
     }
 
     private function getRowFunc()

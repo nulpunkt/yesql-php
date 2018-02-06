@@ -14,7 +14,7 @@ class Repository
         $this->db = $db;
         $this->sqlFile = $sqlFile;
 
-        $this->statements = (new Statement\Factory)->createStatements($this->sqlFile);
+        $this->statements = (new Statement\Factory(new FetchMode\Factory))->createStatements($this->sqlFile);
     }
 
     public function __call($name, $args)
