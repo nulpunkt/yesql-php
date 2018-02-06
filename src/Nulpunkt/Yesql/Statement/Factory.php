@@ -3,9 +3,18 @@
 namespace Nulpunkt\Yesql\Statement;
 
 use Nulpunkt\Yesql\Exception\UnknownStatement;
+use Nulpunkt\Yesql\FetchMode\FetchModeFactory;
 
 class Factory
 {
+    /** @var \Nulpunkt\Yesql\FetchMode\FetchModeFactory */
+    protected $fetchModeFactory;
+
+    public function __construct(FetchModeFactory $fetchModeFactory)
+    {
+        $this->fetchModeFactory = $fetchModeFactory;
+    }
+
     public function createStatements($sqlFile)
     {
         $collected = [];
@@ -38,7 +47,8 @@ class Factory
     private function createStatement($collectedSql, $modline)
     {
         if (stripos($collectedSql, 'select') === 0) {
-            return new Select($collectedSql, $modline);
+            $fetchMode = $this->fetchModeFactory->createFromModLine($modline);
+            return new Select($collectedSql, $modline, $fetchMode);
         } elseif (stripos($collectedSql, 'insert') === 0) {
             return new Insert($collectedSql, $modline);
         } elseif (stripos($collectedSql, 'update') === 0 || stripos($collectedSql, 'delete') === 0) {
