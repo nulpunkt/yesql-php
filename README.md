@@ -78,7 +78,7 @@ The available fetchmodes are: `assoc`, `class`, `column`, `keypair`, `named`
 select id, something from test_table
 -- name: getColumn fetchMode: column
 select id from test_table
--- name: getObjectById oneOrMany: one fetchMod: class(MyObject)
+-- name: getObjectById oneOrMany: one fetchMode: class(MyObject)
 select * from test_table where id = ?
 ```
 ```php
