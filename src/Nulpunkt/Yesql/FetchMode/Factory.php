@@ -47,11 +47,11 @@ class Factory implements FetchModeFactory
             $argument = isset($m[3]) ? $m[3] : null;
         }
 
-        return [$fetchMode, $argument];
+        return [strtolower($fetchMode), $argument];
     }
 
     protected function getFetchModeRegex()
     {
-        return '/fetchMode:\s*(assoc|column|keypair|named|class)(\((.*?)\))?/';
+        return '/fetchMode:\s*(\w+)(\((.*?)\))?/';
     }
 }
