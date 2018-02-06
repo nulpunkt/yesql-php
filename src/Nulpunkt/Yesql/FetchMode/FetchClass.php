@@ -20,6 +20,6 @@ class FetchClass extends BaseFetchMode
 
     public function setMode(PDOStatement $stmt)
     {
-        $stmt->setFetchMode(\PDO::FETCH_COLUMN, $this->className);
+        $stmt->setFetchMode(\PDO::FETCH_CLASS, $this->className);
     }
 }
