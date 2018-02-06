@@ -8,7 +8,7 @@ use Nulpunkt\Yesql\FetchMode\FetchModeFactory;
 class Factory
 {
     /** @var \Nulpunkt\Yesql\FetchMode\FetchModeFactory */
-    private $fetchModeFactory;
+    protected $fetchModeFactory;
 
     public function __construct(FetchModeFactory $fetchModeFactory)
     {
