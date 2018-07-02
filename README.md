@@ -107,8 +107,9 @@ class MyObject {
 $r->getObjectById(3);
 ```
 
-## Using named parameters on insert / update
-Maybe we have a class with a `toRow` method we'd like to call on insert
+## Mapping data on the way in / Using named parameters on insert / update
+We may need to map our domain objects to be able to insert them into the
+database. This allows us to name our parameters as well:
 ```sql
 -- name: insertObject inFunc: MyObject::toRow
 insert into test_table (id, something) values (:id, :something)
