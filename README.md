@@ -20,6 +20,8 @@ You need to make a repository of queries:
 $pdo = new PDO($host, $user, $pass); // Fill in the blanks
 $r = new Nulpunkt\Yesql\Repository($pdo, "my-queries/queries.sql");
 ```
+
+## Fetching many rows
 in `queries.sql` we can put:
 
 ```sql
@@ -33,6 +35,7 @@ which will allow us to call
 $r->getAllRows();
 ```
 
+## Inserting a row
 A database without rows is not of much use, lets insert some data:
 ```sql
 -- name: insertRow
@@ -47,6 +50,7 @@ $r->insertRow('a thing');
 As default, yesql will simply bind all params passed to the called function, to
 the query associated with it. We'll see how to make mappers further down.
 
+## Updating a row
 Maybe we need to fix some exsisting data
 ```sql
 -- name: updateRow
@@ -58,6 +62,7 @@ update test_table set something = ? where id = ?
 $r->updateRow('fixed thing', 3);
 ```
 
+## Fetching a single row
 yesql-php support different modlines, lets say we know we only need to get one
 row:
 
@@ -70,6 +75,7 @@ select * from test_table where id = ?;
 $r->getById(3);
 ```
 
+## Fetching and mapping rows in one go
 Maybe we want to return a modified version of the row. By specifying a
 rowFunc, we can have a function called, on every row returned:
 
@@ -87,6 +93,7 @@ class MyObject {
 $r->getMappedById(3);
 ```
 
+## Mapping rows to objects
 Sometimes an object is want you want, rowClass got your back:
 
 ```sql
@@ -100,7 +107,9 @@ class MyObject {
 $r->getObjectById(3);
 ```
 
-Maybe we have a class with a `toRow` method we'd like to call on insert
+## Mapping data on the way in / Using named parameters on insert / update
+We may need to map our domain objects to be able to insert them into the
+database. This allows us to name our parameters as well:
 ```sql
 -- name: insertObject inFunc: MyObject::toRow
 insert into test_table (id, something) values (:id, :something)
@@ -113,5 +122,5 @@ class MyObject {
   }
 }
 $o = new MyObject;
-$r->insertObject($i, $o) 
+$r->insertObject($i, $o)
 ```
