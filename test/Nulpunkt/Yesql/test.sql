@@ -2,6 +2,9 @@
 -- This will make getById a method which fetch a test row from the database
 select * from test_table where id = ?
 
+-- name: getByIdNamed(id) oneOrMany: one
+select * from test_table where id = :id
+
 -- name: getObjectByIdManually oneOrMany: one rowFunc: TestHelper\TestObject::fromRow
 select * from test_table where id = ?
 
@@ -23,6 +26,10 @@ insert into test_table (id, something) values (:id, :something)
 -- name: updateRow
 update test_table set something = ?
 where id = ?
+
+-- name: updateRowNamed(id, something)
+update test_table set something = :something
+where id = :id
 
 -- name: updateObject inFunc: TestHelper\TestObject::toRow
 update test_table set something = :something

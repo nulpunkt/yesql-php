@@ -10,8 +10,18 @@ class MapInputTest extends \PHPUnit_Framework_TestCase
         $s->expects($this->once())->method('execute')
             ->with('db', ['id'=> 3]);
 
-        $m = new MapInput($s, '');
+        $m = new MapInput($s, '', []);
         $m->execute('db', ['id' => 3]);
+    }
+
+    public function testWeCanExecuteAStatementWithNamedParams()
+    {
+        $s = $this->getMock('Nulpunkt\Yesql\Statement\Statement');
+        $s->expects($this->once())->method('execute')
+            ->with('db', ['id'=> 3]);
+
+        $m = new MapInput($s, '', ['id']);
+        $m->execute('db', [3]);
     }
 
     public function testWeCanExecuteAStatementWithInFunc()
@@ -24,7 +34,7 @@ class MapInputTest extends \PHPUnit_Framework_TestCase
         $s->expects($this->once())->method('execute')
             ->with('db', ['id'=> 3, 'something' => 'from object']);
 
-        $m = new MapInput($s, $modline);
+        $m = new MapInput($s, $modline, []);
         $m->execute('db', [$o]);
     }
 
@@ -34,6 +44,6 @@ class MapInputTest extends \PHPUnit_Framework_TestCase
     public function testWeComplainIfInFuncIsNotCallable()
     {
         $modline = 'inFunc: nope.exe';
-        new MapInput(null, $modline);
+        new MapInput(null, $modline, []);
     }
 }

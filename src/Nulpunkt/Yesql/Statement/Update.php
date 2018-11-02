@@ -18,11 +18,7 @@ class Update implements Statement
             $this->stmt = $db->prepare($this->sql);
         }
 
-        if (isset($args)) {
-            $this->stmt->execute($args);
-        } else {
-            $this->stmt->execute();
-        }
+        $this->stmt->execute($args);
 
         return $this->stmt->rowCount();
     }

@@ -38,8 +38,8 @@ $r->getAllRows();
 ## Inserting a row
 A database without rows is not of much use, lets insert some data:
 ```sql
--- name: insertRow
-insert into test_table (something) values (?)
+-- name: insertRow(thing)
+insert into test_table (something) values (:thing)
 
 ```
 ```php
@@ -53,13 +53,13 @@ the query associated with it. We'll see how to make mappers further down.
 ## Updating a row
 Maybe we need to fix some exsisting data
 ```sql
--- name: updateRow
-update test_table set something = ? where id = ?
+-- name: updateRow(id, thing)
+update test_table set something = :thing where id = :id
 
 ```
 ```php
 // returns the number of rows touched by the update
-$r->updateRow('fixed thing', 3);
+$r->updateRow(3, 'fixed thing');
 ```
 
 ## Fetching a single row
@@ -67,8 +67,8 @@ yesql-php support different modlines, lets say we know we only need to get one
 row:
 
 ```sql
--- name: getById oneOrMany: one
-select * from test_table where id = ?;
+-- name: getById(id) oneOrMany: one
+select * from test_table where id = :id;
 ```
 ```php
 // Fetches one row with id 3
@@ -80,8 +80,8 @@ Maybe we want to return a modified version of the row. By specifying a
 rowFunc, we can have a function called, on every row returned:
 
 ```sql
--- name: getMappedById oneOrMany: one rowFunc: MyObject::mapRow
-select * from test_table where id = ?
+-- name: getMappedById(id) oneOrMany: one rowFunc: MyObject::mapRow
+select * from test_table where id = :id
 ```
 ```php
 class MyObject {
@@ -97,8 +97,8 @@ $r->getMappedById(3);
 Sometimes an object is want you want, rowClass got your back:
 
 ```sql
--- name: getObjectById oneOrMany: one rowClass: MyObject
-select * from test_table where id = ?
+-- name: getObjectById(id) oneOrMany: one rowClass: MyObject
+select * from test_table where id = :id
 ```
 ```php
 class MyObject {
@@ -107,9 +107,9 @@ class MyObject {
 $r->getObjectById(3);
 ```
 
-## Mapping data on the way in / Using named parameters on insert / update
+## Mapping data on the way in
 We may need to map our domain objects to be able to insert them into the
-database. This allows us to name our parameters as well:
+database.
 ```sql
 -- name: insertObject inFunc: MyObject::toRow
 insert into test_table (id, something) values (:id, :something)

@@ -1,5 +1,5 @@
 <?php
-error_reporting(E_ALL | E_STRICT);
+error_reporting(-1);
 
 ini_set("memory_limit", "1024M"); // nothing to see here
 
