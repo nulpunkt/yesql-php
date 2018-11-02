@@ -9,6 +9,11 @@ class RepositoryTest extends \TestHelper\TestCase
         $this->assertEquals(['id' => 1, 'something' => 'a thing'], $this->repo->getById(1));
     }
 
+    public function testWeCanGetOneRowWithNamedParam()
+    {
+        $this->assertEquals(['id' => 1, 'something' => 'a thing'], $this->repo->getByIdNamed(1));
+    }
+
     public function testWeCanGetARowThatDoesNotExsist()
     {
         $this->assertNull($this->repo->getById(11));
@@ -68,6 +73,23 @@ class RepositoryTest extends \TestHelper\TestCase
     public function testWeCanUpdate()
     {
         $rowsAffected = $this->repo->updateRow('other thing updated', 2);
+
+        $this->assertSame(1, $rowsAffected);
+
+        $dataSet = $this->createQueryDataset(
+            ['t' => "SELECT * FROM test_table where id = 2"]
+        );
+
+        $expectedData = $this->createArrayDataSet(
+            ['t' => [['id' => 2, 'something' => 'other thing updated']]]
+        );
+
+        $this->assertDataSetsEqual($expectedData, $dataSet);
+    }
+
+    public function testWeCanUpdateWithNamedParams()
+    {
+        $rowsAffected = $this->repo->updateRowNamed(2, 'other thing updated');
 
         $this->assertSame(1, $rowsAffected);
 

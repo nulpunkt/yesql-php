@@ -11,8 +11,8 @@ class Factory
         $collected = [];
         foreach (file($sqlFile) as $line) {
             $isComment = strpos($line, '--') === 0;
-            if ($isComment && ($name = $this->getMethodName($line))) {
-                $collected[] = $currentCollector = new Collector($name, $line);
+            if ($isComment && ($method = $this->getMethod($line))) {
+                $collected[] = $currentCollector = new Collector($method, $line);
             } elseif (!$isComment) {
                 $currentCollector->appendSql($line);
             }
@@ -22,17 +22,18 @@ class Factory
         foreach ($collected as $c) {
             $statements[$c->getMethodName()] = new MapInput(
                 $this->createStatement($c->getSql(), $c->getModline()),
-                $c->getModline()
+                $c->getModline(),
+                $c->getArgNames()
             );
         }
 
         return $statements;
     }
 
-    public function getMethodName($line)
+    public function getMethod($line)
     {
-        preg_match("/\bname:\s*(\S+)/", $line, $m);
-        return isset($m[1]) ? $m[1] : null;
+        preg_match("/\bname:\s*([^\s(]+)\s*(\(([\w,\s]+)\))?/", $line, $m);
+        return isset($m[1]) ? new Method($m[1], isset($m[3]) ? $m[3] : '') : null;
     }
 
     private function createStatement($collectedSql, $modline)

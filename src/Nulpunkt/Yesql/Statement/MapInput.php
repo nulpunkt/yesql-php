@@ -7,10 +7,11 @@ class MapInput implements Statement
     private $statement;
     private $modline;
 
-    public function __construct($statement, $modline)
+    public function __construct($statement, $modline, $argNames)
     {
         $this->statement = $statement;
         $this->modline = $modline;
+        $this->argNames = $argNames;
         $this->inFunc = $this->getInFunc();
     }
 
@@ -18,6 +19,10 @@ class MapInput implements Statement
     {
         if ($this->inFunc) {
             $args = call_user_func_array($this->inFunc, $args);
+        }
+        if (count($this->argNames) > 0) {
+            $args = array_combine($this->argNames, $args);
+
         }
         return $this->statement->execute($db, $args);
     }

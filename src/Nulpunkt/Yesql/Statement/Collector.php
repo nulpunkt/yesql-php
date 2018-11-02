@@ -4,19 +4,24 @@ namespace Nulpunkt\Yesql\Statement;
 
 class Collector
 {
-    private $methodName;
+    private $method;
     private $modline;
     private $sql;
 
-    public function __construct($methodName, $modline)
+    public function __construct($method, $modline)
     {
-        $this->methodName = $methodName;
+        $this->method = $method;
         $this->modline = $modline;
     }
 
     public function getMethodName()
     {
-        return $this->methodName;
+        return $this->method->getName();
+    }
+
+    public function getArgNames()
+    {
+        return $this->method->getArgNames();
     }
 
     public function getSql()
