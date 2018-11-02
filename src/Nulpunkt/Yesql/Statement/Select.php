@@ -23,11 +23,7 @@ class Select implements Statement
             $this->stmt = $db->prepare($this->sql);
         }
 
-        if (isset($args)) {
-            $this->stmt->execute($args);
-        } else {
-            $this->stmt->execute();
-        }
+        $this->stmt->execute($args);
 
         if ($this->rowClass) {
             $this->stmt->setFetchMode(\PDO::FETCH_CLASS, $this->rowClass);
