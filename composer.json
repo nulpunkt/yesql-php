@@ -18,7 +18,8 @@
     },
     "autoload": {
         "psr-0": {
-            "": "src/"
+            "Nulpunkt": "src/",
+            "TestHelper": "src/"
         }
     }
 }
