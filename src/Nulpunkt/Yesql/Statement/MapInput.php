@@ -29,7 +29,7 @@ class MapInput implements Statement
 
     private function getInFunc()
     {
-        preg_match("/\inFunc:\s*(\S+)/", $this->modline, $m);
+        preg_match("/inFunc:\s*(\S+)/", $this->modline, $m);
         $f = isset($m[1]) ? $m[1] : null;
 
         if ($f && !is_callable($f)) {
