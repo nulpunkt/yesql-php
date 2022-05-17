@@ -2,13 +2,12 @@
 
 namespace Nulpunkt\Yesql\Statement;
 
-class SelectTest extends \PHPUnit_Framework_TestCase
+class SelectTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @expectedException \Nulpunkt\Yesql\Exception\MethodMissing
-    */
     public function testWeComplainIfRowFuncDoesNotExsist()
     {
+        $this->expectException(\Nulpunkt\Yesql\Exception\MethodMissing::class);
+
         new Select(null, 'rowFunc: sntaoheu');
     }
 }
