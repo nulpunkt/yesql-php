@@ -3,12 +3,10 @@
 <phpunit backupGlobals="true"
          backupStaticAttributes="false"
          bootstrap="test/phpunit.bootstrap.php"
-         cacheTokens="false"
          colors="true"
          forceCoversAnnotation="false"
          beStrictAboutTestsThatDoNotTestAnything="true"
          beStrictAboutOutputDuringTests="true"
-         beStrictAboutTestSize="true"
          verbose="true">
   <testsuites>
     <testsuite name="Yesql tests">

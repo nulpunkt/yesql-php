@@ -43,31 +43,21 @@ class RepositoryTest extends \TestHelper\TestCase
     {
         $lastInsertId = $this->repo->insertRow('new thing');
 
-        $dataSet = $this->createQueryDataset(
-            ['t' => "SELECT * FROM test_table order by id desc limit 1"]
+        $this->assertQueryEquals(
+            [['id' => $lastInsertId, 'something' => 'new thing']],
+            "SELECT * FROM test_table order by id desc limit 1"
         );
-
-        $expectedData = $this->createArrayDataSet(
-            ['t' => [['id' => $lastInsertId, 'something' => 'new thing']]]
-        );
-
-        $this->assertDataSetsEqual($expectedData, $dataSet);
     }
 
     public function testWeCanInsertAnObject()
     {
-        $o = new \TestHelper\TestObject;
+        $o = new \TestHelper\TestObject();
         $lastInsertId = $this->repo->insertObject($o);
 
-        $dataSet = $this->createQueryDataset(
-            ['t' => "SELECT * FROM test_table order by id desc limit 1"]
+        $this->assertQueryEquals(
+            [['id' => $lastInsertId, 'something' => 'from object']],
+            "SELECT * FROM test_table order by id desc limit 1"
         );
-
-        $expectedData = $this->createArrayDataSet(
-            ['t' => [['id' => $lastInsertId, 'something' => 'from object']]]
-        );
-
-        $this->assertDataSetsEqual($expectedData, $dataSet);
     }
 
     public function testWeCanUpdate()
@@ -76,15 +66,10 @@ class RepositoryTest extends \TestHelper\TestCase
 
         $this->assertSame(1, $rowsAffected);
 
-        $dataSet = $this->createQueryDataset(
-            ['t' => "SELECT * FROM test_table where id = 2"]
+        $this->assertQueryEquals(
+            [['id' => 2, 'something' => 'other thing updated']],
+            "SELECT * FROM test_table where id = 2"
         );
-
-        $expectedData = $this->createArrayDataSet(
-            ['t' => [['id' => 2, 'something' => 'other thing updated']]]
-        );
-
-        $this->assertDataSetsEqual($expectedData, $dataSet);
     }
 
     public function testWeCanUpdateWithNamedParams()
@@ -93,101 +78,77 @@ class RepositoryTest extends \TestHelper\TestCase
 
         $this->assertSame(1, $rowsAffected);
 
-        $dataSet = $this->createQueryDataset(
-            ['t' => "SELECT * FROM test_table where id = 2"]
+        $this->assertQueryEquals(
+            [['id' => 2, 'something' => 'other thing updated']],
+            "SELECT * FROM test_table where id = 2"
         );
-
-        $expectedData = $this->createArrayDataSet(
-            ['t' => [['id' => 2, 'something' => 'other thing updated']]]
-        );
-
-        $this->assertDataSetsEqual($expectedData, $dataSet);
     }
 
     public function testWeCanUpdateWithObject()
     {
-        $o = new \TestHelper\TestObject;
+        $o = new \TestHelper\TestObject();
         $o->id = 2;
         $rowsAffected = $this->repo->updateObject($o);
 
         $this->assertSame(1, $rowsAffected);
 
-        $dataSet = $this->createQueryDataset(
-            ['t' => "SELECT * FROM test_table where id = 2"]
+        $this->assertQueryEquals(
+            [['id' => 2, 'something' => 'from object']],
+            "SELECT * FROM test_table where id = 2"
         );
-
-        $expectedData = $this->createArrayDataSet(
-            ['t' => [['id' => 2, 'something' => 'from object']]]
-        );
-
-        $this->assertDataSetsEqual($expectedData, $dataSet);
     }
 
     public function testWeCanDelete()
     {
         $this->repo->deleteById(1);
 
-        $dataSet = $this->createQueryDataset(
-            ['t' => 'SELECT * FROM test_table WHERE id = 1']
-        );
-
-        $this->assertSame(
-            0,
-            $dataSet->getTable('t')->getRowCount(),
-            'The row should be gone from the database'
-        );
+        $this->assertQueryEquals([], "SELECT * FROM test_table where id = 1");
     }
 
-    /**
-     * @expectedException Nulpunkt\Yesql\Exception\MethodMissing
-     */
     public function testWeComplainAboutUndefinedMethods()
     {
+        $this->expectException(Exception\MethodMissing::class);
+
         $this->repo->derp();
     }
 
-    /**
-     * @expectedException Nulpunkt\Yesql\Exception\UnknownStatement
-     */
     public function testWeComplainAboutSqlWeDontKnowWhatToDoAbout()
     {
+        $this->expectException(Exception\UnknownStatement::class);
+
         $r = new Repository($this->getDatabase(), __DIR__ . "/unknown_statement.sql");
         $r->describeSomething();
     }
 
-    /**
-     * @expectedException Nulpunkt\Yesql\Exception\MethodMissing
-     */
-    public function testWeComplainAboutNonExsistingRowFunc()
+    public function testWeComplainAboutNonExsistingRowFun()
     {
+        $this->expectException(Exception\MethodMissing::class);
+
         $r = new Repository($this->getDatabase(), __DIR__ . "/unknown_rowfunc.sql");
         $r->describeSomething();
     }
 
-    /**
-     * @expectedException Nulpunkt\Yesql\Exception\ClassNotFound
-     */
     public function testWeComplainAboutNonExsistingRowClass()
     {
+        $this->expectException(Exception\ClassNotFound::class);
+
         $r = new Repository($this->getDatabase(), __DIR__ . "/unknown_rowclass.sql");
         $r->describeSomething();
     }
 
-    public function setup()
+    public function setup(): void
     {
         parent::setup();
         $this->repo = new Repository($this->getDatabase(), __DIR__ . "/test.sql");
     }
 
-    protected function getDataSet()
+    protected function getDataSet(): array
     {
-        return $this->createArrayDataSet(
-            [
-                'test_table' => [
-                    ['id' => 1, 'something' => 'a thing'],
-                    ['id' => 2, 'something' => 'an other thing!'],
-                ]
+        return [
+            'test_table' => [
+                ['id' => 1, 'something' => 'a thing'],
+                ['id' => 2, 'something' => 'an other thing!'],
             ]
-        );
+        ];
     }
 }

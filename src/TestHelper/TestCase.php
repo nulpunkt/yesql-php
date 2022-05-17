@@ -2,12 +2,14 @@
 
 namespace TestHelper;
 
-abstract class TestCase extends \PHPUnit_Extensions_Database_TestCase
+abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
     private $db;
 
     public function __construct()
     {
+        parent::__construct();
+
         $options = array(
             \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
@@ -15,19 +17,35 @@ abstract class TestCase extends \PHPUnit_Extensions_Database_TestCase
 
         $this->db = new \PDO(\MYSQL_SERVER_DSN, \DB_USER, \DB_PASS, $options);
 
-        $fixture = file_get_contents(__DIR__.'/mysql-fixture.sql');
+        $fixture = file_get_contents(__DIR__ . '/mysql-fixture.sql');
         $this->db->exec('USE yesql');
         $stmt = $this->db->prepare($fixture);
         $stmt->execute();
     }
 
-    public function createQueryDataset($tables)
+    abstract protected function getDataSet(): array;
+
+    public function setup(): void
     {
-        $ds = new \PHPUnit_Extensions_Database_DataSet_QueryDataSet($this->getConnection());
-        foreach ($tables as $table => $query) {
-            $ds->addTable($table, $query);
+        parent::setup();
+        foreach ($this->getDataSet() as $table => $rows) {
+            $this->db->prepare("truncate {$table}")->execute();
+            $sql = "INSERT " . $this->createIntoSql($table, $rows[0]);
+            $stmt = $this->db->prepare($sql);
+            foreach ($rows as $row) {
+                $stmt->execute($row);
+            }
         }
-        return $ds;
+    }
+
+    private function createIntoSql($table, $binds)
+    {
+        $names = array_keys($binds);
+        $namesEscaped = array_map(fn($name) => "`$name`", $names);
+        $values = array_map(fn($name) => ":$name", $names);
+
+        return " INTO {$table} (" . implode(", ", $namesEscaped) . ")
+                VALUES (" . implode(", ", $values) . ")";
     }
 
     public function getDatabase()
@@ -38,5 +56,10 @@ abstract class TestCase extends \PHPUnit_Extensions_Database_TestCase
     public function getConnection()
     {
         return $this->createDefaultDBConnection($this->db, 'yesql');
+    }
+
+    protected function assertQueryEquals($expected, $sql)
+    {
+        $this->assertEquals($expected, $this->db->query($sql, \PDO::FETCH_ASSOC)->fetchAll());
     }
 }
