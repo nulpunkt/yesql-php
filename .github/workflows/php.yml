@@ -45,7 +45,7 @@ jobs:
       run: composer install --prefer-dist --no-progress
 
     - name: Prepare the test database
-      run: mysql --host 127.0.0.1 --port 3306 -uroot < src/TestHelper/mysql-fixture.sql
+      run: mysql --host 127.0.0.1 --port 3306 -uroot -prootpassword < src/TestHelper/mysql-fixture.sql
 
     - name: Run test suite
       run: vendor/bin/phpunit --verbose --coverage-text test/
