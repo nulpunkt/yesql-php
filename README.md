@@ -1,4 +1,4 @@
-# yesql-php [![Build Status](https://travis-ci.org/nulpunkt/yesql-php.png?branch=master)](https://travis-ci.org/nulpunkt/yesql-php)
+# yesql-php
 
 This is a clone of the wonderful [yesql library from clojure](https://github.com/krisajenkins/yesql).
 The idea is to have a seperate sql file for queries, which you can then access
