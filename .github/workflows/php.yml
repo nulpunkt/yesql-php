@@ -1,4 +1,4 @@
-name: PHP Composer
+name: yesql build
 
 on:
   push:
@@ -8,6 +8,18 @@ on:
 
 permissions:
   contents: read
+
+services:
+  mysql:
+    image: mysql:5.7
+    env:
+      MYSQL_DATABASE: test_db
+      MYSQL_USER: yesql
+      MYSQL_PASSWORD: yesql
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - 3306:3306
+    options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retrie
 
 jobs:
   build:
@@ -32,5 +44,8 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
+    - name: Prepare the test database
+      run: mysql --host 127.0.0.1 --port 3306 -uroot < src/TestHelper/mysql-fixture.sql
+
     - name: Run test suite
-      run: vendor/bin/phpunit --configuration phpunit_travis_mysql.xml --verbose --coverage-text test/
+      run: vendor/bin/phpunit --verbose --coverage-text test/
