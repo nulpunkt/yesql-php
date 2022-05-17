@@ -10,10 +10,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         parent::__construct();
 
-        $options = array(
-            \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
-            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
-        );
+        $options = [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION];
 
         $this->db = new \PDO(\MYSQL_SERVER_DSN, \DB_USER, \DB_PASS, $options);
 

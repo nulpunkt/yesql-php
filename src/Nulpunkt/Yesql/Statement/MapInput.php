@@ -22,14 +22,13 @@ class MapInput implements Statement
         }
         if (count($this->argNames) > 0) {
             $args = array_combine($this->argNames, $args);
-
         }
         return $this->statement->execute($db, $args);
     }
 
     private function getInFunc()
     {
-        preg_match("/\inFunc:\s*(\S+)/", $this->modline, $m);
+        preg_match("/inFunc:\s*(\S+)/", $this->modline, $m);
         $f = isset($m[1]) ? $m[1] : null;
 
         if ($f && !is_callable($f)) {
