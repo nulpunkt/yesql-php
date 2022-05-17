@@ -13,11 +13,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $options = [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION];
 
         $this->db = new \PDO(\MYSQL_SERVER_DSN, \DB_USER, \DB_PASS, $options);
-
-        $fixture = file_get_contents(__DIR__ . '/mysql-fixture.sql');
         $this->db->exec('USE yesql');
-        $stmt = $this->db->prepare($fixture);
-        $stmt->execute();
     }
 
     abstract protected function getDataSet(): array;
