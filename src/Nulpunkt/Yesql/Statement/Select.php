@@ -7,6 +7,7 @@ class Select implements Statement
     private $sql;
     private $modline;
     private $rowFunc;
+    private $rowClass;
     private $stmt;
 
     public function __construct($sql, $modline)
