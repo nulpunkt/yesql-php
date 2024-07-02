@@ -6,6 +6,8 @@ class MapInput implements Statement
 {
     private $statement;
     private $modline;
+    private $argNames;
+    private $inFunc;
 
     public function __construct($statement, $modline, $argNames)
     {
