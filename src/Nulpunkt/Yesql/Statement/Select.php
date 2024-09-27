@@ -4,15 +4,12 @@ namespace Nulpunkt\Yesql\Statement;
 
 class Select implements Statement
 {
-    private $sql;
-    private $modline;
     private $rowFunc;
+    private $rowClass;
     private $stmt;
 
-    public function __construct($sql, $modline)
+    public function __construct(private $sql, private $modline)
     {
-        $this->sql = $sql;
-        $this->modline = $modline;
         $this->rowFunc = $this->getRowFunc();
         $this->rowClass = $this->getRowClass();
     }

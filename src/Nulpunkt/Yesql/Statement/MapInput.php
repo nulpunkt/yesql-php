@@ -4,14 +4,10 @@ namespace Nulpunkt\Yesql\Statement;
 
 class MapInput implements Statement
 {
-    private $statement;
-    private $modline;
+    private $inFunc;
 
-    public function __construct($statement, $modline, $argNames)
+    public function __construct(private $statement, private $modline, private $argNames)
     {
-        $this->statement = $statement;
-        $this->modline = $modline;
-        $this->argNames = $argNames;
         $this->inFunc = $this->getInFunc();
     }
 
